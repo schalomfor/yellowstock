@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>iPhone 15 Pro Max - Grade Or</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Yellowstock</h1>
+  <a href="index.html">← Retour Accueil</a>
+</header>
+
+<section style="text-align:center; padding:40px;">
+
+  <img src="images/iphone15promax.jpg" style="width:300px">
+
+  <h1>iPhone 15 Pro Max</h1>
+
+  <h3>Reconditionné - Grade Or ⭐⭐⭐⭐⭐</h3>
+
+  <p><strong>Stock limité ⚡</strong></p>
+
+  <p>
+    Produit reconditionné en excellent état (Grade Or).  
+    Testé, vérifié et garanti fonctionnel à 100%.
+  </p>
+
+  <h3>Choisir la capacité :</h3>
+
+  <select>
+    <option>128 Go - 539€</option>
+    <option selected>256 Go - 579€</option>
+    <option>512 Go - 639€</option>
+  </select>
+
+  <h2>Prix : 579€</h2>
+
+  <button onclick="buy()">Acheter maintenant</button>
+
+</section>
+
+<script src="script.js"></script>
+
+</body>
+</html>

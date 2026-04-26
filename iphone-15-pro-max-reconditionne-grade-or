@@ -30,19 +30,25 @@
 
   <h3>Choisir la capacité :</h3>
 
-  <select>
-    <option>128 Go - 539€</option>
-    <option selected>256 Go - 579€</option>
-    <option>512 Go - 639€</option>
+  <select onchange="updatePrice(this)">
+    <option value="539">128 Go - 539€</option>
+    <option value="579" selected>256 Go - 579€</option>
+    <option value="639">512 Go - 639€</option>
   </select>
 
-  <h2>Prix : 579€</h2>
+  <h2 id="price">Prix : 579€</h2>
 
   <button onclick="buy()">Acheter maintenant</button>
 
 </section>
 
 <script src="script.js"></script>
+
+<script>
+function updatePrice(select) {
+  document.getElementById("price").innerText = "Prix : " + select.value + "€";
+}
+</script>
 
 </body>
 </html>

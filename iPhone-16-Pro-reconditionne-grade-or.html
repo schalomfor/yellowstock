@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>iPhone 16 Pro - Grade Or</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Yellowstock</h1>
+  <a href="index.html">← Retour Accueil</a>
+</header>
+
+<section style="text-align:center; padding:40px;">
+
+  <img src="images/iphone16pro.jpg" style="width:300px">
+
+  <h1>iPhone 16 Pro</h1>
+
+  <h3>Reconditionné - Grade Or ⭐⭐⭐⭐⭐</h3>
+
+  <p><strong>Stock limité ⚡</strong></p>
+
+  <p>
+    Produit reconditionné en excellent état (Grade Or).  
+    Batterie ≥ 85%, testé, vérifié et garanti fonctionnel à 100%.  
+    Garantie 12 mois incluse.
+  </p>
+
+  <h3>Choisir la capacité :</h3>
+
+  <select onchange="updatePrice(this)">
+    <option value="749">128 Go - 749€</option>
+    <option value="829" selected>256 Go - 829€ (Meilleur choix)</option>
+    <option value="929">512 Go - 929€</option>
+  </select>
+
+  <h2 id="price">Prix : 829€</h2>
+
+  <br><br>
+
+  <button onclick="buy()">Acheter maintenant</button>
+
+</section>
+
+<script src="script.js"></script>
+
+<script>
+function updatePrice(select) {
+  document.getElementById("price").innerText = "Prix : " + select.value + "€";
+}
+</script>
+
+</body>
+</html>

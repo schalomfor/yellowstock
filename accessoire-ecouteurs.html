@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Écouteurs Pro - Yellowstock</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Yellowstock</h1>
+  <a href="index.html">← Retour</a>
+
+  <div>
+    🛒 <span id="cartCount">0</span>
+    <button onclick="openCart()">Voir</button>
+  </div>
+</header>
+
+<section class="product">
+
+  <img 
+    src="https://images.unsplash.com/photo-1585386959984-a41552262b7b"
+    style="width:300px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"
+  >
+
+  <h1>Écouteurs Pro</h1>
+
+  <h3>Produit connecté - forte valeur ajoutée 🚀</h3>
+
+  <p>
+    Écouteurs sans fil premium, autonomie longue durée,
+    qualité sonore immersive. Idéal pour accompagner votre iPhone.
+  </p>
+
+  <h2>9,90€</h2>
+
+  <button onclick="addToCart('Écouteurs Pro', 9.9)">
+    Ajouter au panier
+  </button>
+
+</section>
+
+<div id="cartModal" class="cart-modal"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

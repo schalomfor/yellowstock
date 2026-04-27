@@ -5,20 +5,28 @@ body {
   color: white;
 }
 
+/* HEADER PRO (Apple style) */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
+header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+/* NAV */
 nav {
   text-align: center;
-  padding: 10px;
+  padding: 12px;
   background: #111;
 }
 
@@ -26,8 +34,14 @@ nav a {
   color: white;
   margin: 0 10px;
   text-decoration: none;
+  font-size: 14px;
 }
 
+nav a:hover {
+  color: #0071e3;
+}
+
+/* PRODUITS */
 .product {
   background: #15151d;
   margin: 20px auto;
@@ -35,8 +49,14 @@ nav a {
   border-radius: 20px;
   width: 80%;
   text-align: center;
+  transition: 0.2s ease;
 }
 
+.product:hover {
+  transform: scale(1.02);
+}
+
+/* BOUTONS */
 button {
   background: #0071e3;
   border: none;
@@ -44,10 +64,12 @@ button {
   color: white;
   border-radius: 12px;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 button:hover {
   background: #0a84ff;
+  transform: scale(1.03);
 }
 
 /* PANIER MODAL */
@@ -55,10 +77,18 @@ button:hover {
   position: fixed;
   top: 0;
   right: 0;
-  width: 350px;
+  width: 380px;
   height: 100%;
-  background: #111;
+  background: #0f0f14;
   padding: 20px;
   display: none;
   overflow-y: auto;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+  border-left: 1px solid #222;
+  z-index: 9999;
+}
+
+/* TEXTES PANIER */
+.cart-modal h2 {
+  margin-top: 0;
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Chargeur Fast - Yellowstock</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Yellowstock</h1>
+  <a href="index.html">← Retour</a>
+
+  <div>
+    🛒 <span id="cartCount">0</span>
+    <button onclick="openCart()">Voir</button>
+  </div>
+</header>
+
+<section class="product">
+
+  <img 
+    src="https://images.unsplash.com/photo-1580910051074-3eb694886505"
+    style="width:300px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"
+  >
+
+  <h1>Chargeur Fast</h1>
+
+  <h3 style="color:#0a84ff;">Recharge ultra rapide ⚡</h3>
+
+  <p style="color:#ff3b30;"><strong>🔥 Offre limitée - Stock faible</strong></p>
+
+  <p>
+    Chargeur rapide compatible iPhone. Recharge jusqu'à 50% en 30 minutes.
+    Idéal pour accompagner votre smartphone au quotidien.
+  </p>
+
+  <ul style="text-align:left; max-width:300px; margin:auto;">
+    <li>✔️ Charge rapide certifiée</li>
+    <li>✔️ Compatible tous iPhone</li>
+    <li>✔️ Format compact et durable</li>
+  </ul>
+
+  <h2 style="margin-top:15px;">6,90€</h2>
+
+  <p style="text-decoration:line-through; color:gray;">19,90€</p>
+
+  <button onclick="addToCart('Chargeur Fast', 6.9)">
+    🛒 Ajouter au panier
+  </button>
+
+  <p style="margin-top:10px;">⭐⭐⭐⭐⭐ +80 clients satisfaits</p>
+
+  <p style="font-size:12px; color:gray;">
+    💡 Parfait avec votre iPhone
+  </p>
+
+</section>
+
+<!-- PANIER -->
+<div id="cartModal" class="cart-modal"></div>
+
+<!-- SCRIPT -->
+<script src="script.js"></script>
+
+</body>
+</html>

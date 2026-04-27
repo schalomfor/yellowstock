@@ -1,15 +1,25 @@
 let cart = [];
 
-/* INIT */
+/* INIT - récupère panier si existant */
 document.addEventListener("DOMContentLoaded", () => {
+  const savedCart = localStorage.getItem("cart");
+  if (savedCart) {
+    cart = JSON.parse(savedCart);
+  }
   updateCartCount();
 });
 
-/* AJOUT AU PANIER */
+/* AJOUT PRODUIT */
 function addToCart(name, price) {
   cart.push({ name, price });
+  saveCart();
   updateCartCount();
   renderCart();
+}
+
+/* SAUVEGARDE LOCAL */
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 /* COMPTEUR */
@@ -20,7 +30,7 @@ function updateCartCount() {
   }
 }
 
-/* RENDU PANIER */
+/* AFFICHAGE PANIER */
 function renderCart() {
   const modal = document.getElementById("cartModal");
   if (!modal) return;
@@ -48,7 +58,7 @@ function renderCart() {
     modal.innerHTML += `
       <hr>
       <h3>Total : ${total}€</h3>
-      <button onclick="pay()">💳 Payer (Stripe)</button>
+      <button onclick="goToCheckout()">💳 Passer à la caisse</button>
     `;
   }
 
@@ -71,17 +81,21 @@ function closeCart() {
   document.getElementById("cartModal").style.display = "none";
 }
 
-/* SUPPRIMER PRODUIT */
+/* SUPPRIMER ITEM */
 function removeItem(index) {
   cart.splice(index, 1);
+  saveCart();
   updateCartCount();
   renderCart();
 }
 
-/* PAIEMENT (DEMO STRIPE) */
+/* REDIRECTION CHECKOUT */
+function goToCheckout() {
+  saveCart();
+  window.location.href = "checkout.html";
+}
+
+/* PAIEMENT DEMO */
 function pay() {
   alert("Redirection vers Stripe Checkout (mode démo)");
-
-  // 👉 VERSION RÉELLE :
-  // window.location.href = "/checkout";
 }

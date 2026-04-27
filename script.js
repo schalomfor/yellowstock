@@ -2,7 +2,15 @@ let cart = [];
 
 function addToCart(name, price) {
   cart.push({ name, price });
+  updateCartCount();
   renderCart();
+}
+
+function updateCartCount() {
+  const counter = document.getElementById("cartCount");
+  if (counter) {
+    counter.innerText = cart.length;
+  }
 }
 
 function renderCart() {
@@ -13,9 +21,12 @@ function renderCart() {
 
   let total = 0;
 
-  cart.forEach((item, i) => {
+  cart.forEach((item, index) => {
     modal.innerHTML += `
-      <p>${item.name} - ${item.price}€</p>
+      <div style="margin-bottom:10px;">
+        <p>${item.name} - ${item.price}€</p>
+        <button onclick="removeItem(${index})">Supprimer</button>
+      </div>
     `;
     total += item.price;
   });
@@ -23,7 +34,7 @@ function renderCart() {
   modal.innerHTML += `
     <hr>
     <h3>Total : ${total}€</h3>
-    <button onclick="pay()">Payer avec Stripe</button>
+    <button onclick="pay()">💳 Payer avec Stripe</button>
     <br><br>
     <button onclick="closeCart()">Fermer</button>
   `;
@@ -32,18 +43,24 @@ function renderCart() {
 }
 
 function openCart() {
-  document.getElementById("cartModal").style.display = "block";
   renderCart();
+  document.getElementById("cartModal").style.display = "block";
 }
 
 function closeCart() {
   document.getElementById("cartModal").style.display = "none";
 }
 
-/* STRIPE DEMO */
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCartCount();
+  renderCart();
+}
+
+/* STRIPE (DEMO) */
 function pay() {
   alert("Redirection vers Stripe Checkout (mode démo)");
 
-  // 👉 VERSION RÉELLE (à activer avec backend)
+  // VERSION RÉELLE (backend requis)
   // window.location.href = "/checkout";
 }

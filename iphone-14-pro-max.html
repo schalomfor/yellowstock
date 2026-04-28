@@ -8,7 +8,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont;
-  background: #b5b69e;
+  background: #f2f2f2;
 }
 
 /* HEADER */
@@ -16,13 +16,16 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px;
-  background: rgba(0,0,0,0.7);
+  padding: 20px 25px;
+  background: rgba(0,0,0,0.85);
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
 }
@@ -30,12 +33,16 @@ header {
 .cart-btn {
   font-size: 22px;
   cursor: pointer;
+  background: white;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 12px;
 }
 
 /* IMAGE */
 .hero-img {
   width: 100%;
-  max-height: 60vh;
+  max-height: 55vh;
   object-fit: cover;
 }
 
@@ -45,28 +52,57 @@ section {
   padding: 30px;
 }
 
-/* BOUTONS */
+/* BOUTON */
 button {
   padding: 12px 18px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #0071e3;
   color: white;
   cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  z-index: 9998;
 }
 
 /* PANIER */
 .cart-modal {
   position: fixed;
   top: 0;
-  right: -80%;
-  width: 80%;
+  right: -420px;
+  width: 380px;
   height: 100%;
-  background: #ccff00;
+  background: white;
   color: black;
   padding: 20px;
-  transition: 0.25s;
+  transition: 0.3s ease;
   z-index: 9999;
+  box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+  overflow-y: auto;
+}
+
+.cart-modal.active {
+  right: 0;
+}
+
+.cart-item {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 }
 </style>
 
@@ -87,18 +123,17 @@ button {
 <img src="iphone14promax.jpg" class="hero-img">
 
 <section>
-
   <h1>iPhone 14 Pro Max</h1>
+  <p style="color:#d00;">🔥 Grade Or — Quasi neuf</p>
+  <h2>539€</h2>
 
-  <p style="color:red;">🔥 Grade Or — Quasi neuf</p>
-
-  <h2 id="price">539€</h2>
-
-  <button onclick="confirmAdd('iPhone 14 Pro Max', 539)">
+  <button onclick="addToCart('iPhone 14 Pro Max', 539)">
     Ajouter au panier
   </button>
-
 </section>
+
+<!-- OVERLAY -->
+<div class="overlay" onclick="closeCart()"></div>
 
 <!-- PANIER -->
 <div id="cartModal" class="cart-modal"></div>
@@ -106,55 +141,76 @@ button {
 <script>
 
 /* =========================
-   VARIABLES
+   PANIER GLOBAL (LOCALSTORAGE)
 ========================= */
-let cart = [];
-let cartOpen = false;
-let startX = 0;
+let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
 
 /* =========================
-   PANIER
+   AJOUT PANIER
 ========================= */
-
-function openCart() {
-  document.getElementById("cartModal").style.right = "0";
-  cartOpen = true;
-  renderCart();
-}
-
-function closeCart() {
-  document.getElementById("cartModal").style.right = "-80%";
-  cartOpen = false;
-}
-
-function confirmAdd(name, price) {
-  if (!confirm("Ajouter ce produit au panier ?")) return;
-
+function addToCart(name, price) {
   cart.push({ name, price });
+  saveCart();
   updateCartCount();
   openCart();
 }
 
+/* =========================
+   SAUVEGARDE
+========================= */
+function saveCart() {
+  localStorage.setItem("ys_cart", JSON.stringify(cart));
+}
+
+/* =========================
+   COMPTEUR
+========================= */
 function updateCartCount() {
   document.getElementById("cartCount").innerText = cart.length;
 }
 
+/* =========================
+   OUVERTURE PANIER
+========================= */
+function openCart() {
+  document.querySelector(".cart-modal").classList.add("active");
+  document.querySelector(".overlay").style.display = "block";
+  renderCart();
+}
+
+/* =========================
+   FERMETURE PANIER
+========================= */
+function closeCart() {
+  document.querySelector(".cart-modal").classList.remove("active");
+  document.querySelector(".overlay").style.display = "none";
+}
+
+/* =========================
+   AFFICHAGE PANIER
+========================= */
 function renderCart() {
   let modal = document.getElementById("cartModal");
 
   let total = 0;
-  modal.innerHTML = "<h2>🛒 Panier</h2>";
+
+  modal.innerHTML = `
+    <h2>🛒 Panier</h2>
+  `;
 
   if (cart.length === 0) {
     modal.innerHTML += "<p>Panier vide</p>";
+    return;
   }
 
   cart.forEach((item, index) => {
     total += item.price;
 
     modal.innerHTML += `
-      <div style="margin-bottom:10px;">
-        <p>${item.name} - ${item.price}€</p>
+      <div class="cart-item">
+        <strong>${item.name}</strong><br>
+        ${item.price}€
+        <br>
         <button onclick="removeItem(${index})">Supprimer</button>
       </div>
     `;
@@ -168,19 +224,33 @@ function renderCart() {
   `;
 }
 
+/* =========================
+   SUPPRESSION
+========================= */
 function removeItem(i) {
   cart.splice(i, 1);
+  saveCart();
   updateCartCount();
   renderCart();
 }
 
+/* =========================
+   PAIEMENT
+========================= */
 function checkout() {
-  alert("Connexion Stripe à faire");
+  alert("Paiement simulé Yellowstock 💳");
+
+  cart = [];
+  saveCart();
+  updateCartCount();
+  renderCart();
+  closeCart();
 }
 
 /* =========================
-   SWIPE
+   SWIPE (FIABLE)
 ========================= */
+let startX = 0;
 
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
@@ -194,7 +264,9 @@ document.addEventListener("touchend", e => {
 });
 
 /* INIT */
-window.onload = () => updateCartCount();
+window.onload = () => {
+  updateCartCount();
+};
 
 </script>
 

@@ -4,13 +4,77 @@
 <meta charset="UTF-8">
 <title>iPhone 15 Pro - Yellowstock</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- STYLE APPLE-LIKE ET FOND KAKI MILITAIRE -->
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  background-color: #b5b69e; /* Kaki militaire clair pale */
+  color: black;
+  margin: 0;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+}
+
+header h1 {
+  font-size: 36px;
+  margin: 0;
+}
+
+/* HERO IMAGE FULL */
+.hero-img {
+  width: 63%;
+  height: auto;
+  object-fit: cover;
+  margin-top: 20px;
+  border-radius: 30px;
+}
+
+/* BOUTONS PREMIUM */
+.btn {
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 16px;
+  margin-top: 10px;
+  background-color: #0071e3;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+.btn:hover {
+  background-color: #005bb5;
+}
+
+.price {
+  font-size: 28px;
+  margin-top: 20px;
+}
+
+/* PANIER MODAL */
+.cart-modal {
+  background: #f5f5f7 !important;
+  color: black !important;
+  padding: 20px;
+}
+</style>
+
 </head>
 
 <body>
 
 <!-- HEADER CLIQUABLE -->
-<header style="cursor:pointer;" onclick="window.location.href='index.html'">
-  <h1 style="margin:0; font-size:36px;">Yellowstock</h1>
+<header onclick="window.location.href='index.html'">
+  <h1>Yellowstock</h1>
 
   <div>
     🛒 <span id="cartCount">0</span>
@@ -18,8 +82,8 @@
   </div>
 </header>
 
-<!-- HERO -->
-<section style="text-align:center; padding:20px;">
+<!-- HERO SECTION -->
+<section style="text-align:center; padding:30px 20px;">
 
   <h1 style="font-size:40px; margin-top:40px;">iPhone 15 Pro</h1>
 
@@ -31,8 +95,8 @@
     🔥 Stock limité — Grade Or (quasi neuf)
   </p>
 
-  <!-- IMAGE 55% LARGEUR PAGE -->
-  <img src="iphone15.jpg" style="width:55%; height:auto; border-radius:30px; margin-top:20px;">
+  <!-- IMAGE -->
+  <img src="iphone15.jpg" class="hero-img">
 
   <h2 style="margin-top:20px;">À partir de 419€</h2>
   <p style="text-decoration:line-through; color:gray;">699€</p>

@@ -3,50 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>iPhone 14 Pro Max - Yellowstock</title>
-<link rel="stylesheet" href="style.css">
 
 <style>
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont;
   background: #b5b69e;
 }
 
-/* HEADER FIX */
+/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 30px;
+  padding: 25px;
   background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(10px);
   color: white;
 }
 
-/* LOGO FIX */
 .logo {
-  font-size: 34px; /* ← AGRANDI */
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: bold;
   cursor: pointer;
 }
 
-/* PANIER */
 .cart-btn {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-}
-
-/* MENU */
-.top-nav {
-  background: rgba(0,0,0,0.6);
-  padding: 12px;
-  text-align: center;
-}
-
-.top-nav a {
-  color: white;
-  margin: 0 10px;
-  text-decoration: none;
 }
 
 /* IMAGE */
@@ -59,31 +42,31 @@ header {
 /* SECTION */
 section {
   text-align: center;
-  padding: 25px;
+  padding: 30px;
 }
 
-/* BUTTON */
+/* BOUTONS */
 button {
-  background: #0071e3;
+  padding: 12px 18px;
   border: none;
-  padding: 12px 20px;
+  border-radius: 10px;
+  background: #0071e3;
   color: white;
-  border-radius: 12px;
   cursor: pointer;
 }
 
-/* PANIER CORRIGÉ */
+/* PANIER */
 .cart-modal {
   position: fixed;
   top: 0;
-  right: -350px;
-  width: 350px;
+  right: -80%;
+  width: 80%;
   height: 100%;
-  background: #d2a679; /* 🍫 CHOCOLAT CLAIR */
+  background: #ccff00;
   color: black;
   padding: 20px;
-  transition: right 0.3s ease;
-  z-index: 2000;
+  transition: 0.25s;
+  z-index: 9999;
 }
 </style>
 
@@ -96,16 +79,10 @@ button {
     Yellowstock
   </div>
 
-  <div class="cart-btn" onclick="toggleCart()">
+  <div class="cart-btn" onclick="openCart()">
     🛒 <span id="cartCount">0</span>
   </div>
 </header>
-
-<div class="top-nav">
-  <a href="iphone-14-pro-max.html">14 Pro Max</a>
-  <a href="iphone-15-pro.html">15 Pro</a>
-  <a href="iphone-15-pro-max.html">15 Pro Max</a>
-</div>
 
 <img src="iphone14promax.jpg" class="hero-img">
 
@@ -113,46 +90,97 @@ button {
 
   <h1>iPhone 14 Pro Max</h1>
 
-  <p style="color:#ff3b30;">🔥 Grade Or — Quasi neuf</p>
+  <p style="color:red;">🔥 Grade Or — Quasi neuf</p>
 
-  <h2>À partir de 499€</h2>
+  <h2 id="price">539€</h2>
 
-  <select id="storage" onchange="updatePrice()">
-    <option value="499">128 Go - 499€</option>
-    <option value="539" selected>256 Go - 539€</option>
-    <option value="589">512 Go - 589€</option>
-  </select>
-
-  <h2 id="price">Prix : 539€</h2>
-
-  <button onclick="addToCart('iPhone 14 Pro Max', getPrice())">
+  <button onclick="confirmAdd('iPhone 14 Pro Max', 539)">
     Ajouter au panier
   </button>
 
 </section>
 
+<!-- PANIER -->
 <div id="cartModal" class="cart-modal"></div>
 
 <script>
+
+/* =========================
+   VARIABLES
+========================= */
+let cart = [];
 let cartOpen = false;
+let startX = 0;
 
-/* PANIER FIX */
-function toggleCart() {
-  const cart = document.getElementById("cartModal");
+/* =========================
+   PANIER
+========================= */
 
-  if (!cartOpen) {
-    cart.style.right = "0";
-    cartOpen = true;
-  } else {
-    cart.style.right = "-350px";
-    cartOpen = false;
-  }
-
+function openCart() {
+  document.getElementById("cartModal").style.right = "0";
+  cartOpen = true;
   renderCart();
 }
 
-/* SWIPE FIX (PANIER UNIQUEMENT) */
-let startX = 0;
+function closeCart() {
+  document.getElementById("cartModal").style.right = "-80%";
+  cartOpen = false;
+}
+
+function confirmAdd(name, price) {
+  if (!confirm("Ajouter ce produit au panier ?")) return;
+
+  cart.push({ name, price });
+  updateCartCount();
+  openCart();
+}
+
+function updateCartCount() {
+  document.getElementById("cartCount").innerText = cart.length;
+}
+
+function renderCart() {
+  let modal = document.getElementById("cartModal");
+
+  let total = 0;
+  modal.innerHTML = "<h2>🛒 Panier</h2>";
+
+  if (cart.length === 0) {
+    modal.innerHTML += "<p>Panier vide</p>";
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price;
+
+    modal.innerHTML += `
+      <div style="margin-bottom:10px;">
+        <p>${item.name} - ${item.price}€</p>
+        <button onclick="removeItem(${index})">Supprimer</button>
+      </div>
+    `;
+  });
+
+  modal.innerHTML += `
+    <hr>
+    <h3>Total : ${total}€</h3>
+    <button onclick="checkout()">💳 Payer</button>
+    <button onclick="closeCart()">Fermer</button>
+  `;
+}
+
+function removeItem(i) {
+  cart.splice(i, 1);
+  updateCartCount();
+  renderCart();
+}
+
+function checkout() {
+  alert("Connexion Stripe à faire");
+}
+
+/* =========================
+   SWIPE
+========================= */
 
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
@@ -161,27 +189,14 @@ document.addEventListener("touchstart", e => {
 document.addEventListener("touchend", e => {
   let endX = e.changedTouches[0].clientX;
 
-  if (startX - endX > 100) {
-    toggleCart(); // ouvrir
-  }
-
-  if (endX - startX > 100) {
-    toggleCart(); // fermer
-  }
+  if (startX - endX > 80) openCart();
+  if (endX - startX > 80) closeCart();
 });
 
-/* PRIX */
-function updatePrice() {
-  const price = document.getElementById("storage").value;
-  document.getElementById("price").innerText = "Prix : " + price + "€";
-}
+/* INIT */
+window.onload = () => updateCartCount();
 
-function getPrice() {
-  return parseFloat(document.getElementById("storage").value);
-}
 </script>
-
-<script src="script.js"></script>
 
 </body>
 </html>

@@ -3,63 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>iPhone 15 Pro - Yellowstock</title>
-
 <link rel="stylesheet" href="style.css">
-
-<!-- TYPO STYLE APPLE -->
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-}
-
-/* HERO IMAGE FULL */
-.hero-img {
-  width: 100%;
-  height: 70vh;
-  object-fit: cover;
-  margin-top: 20px;
-}
-
-/* TEXTE PLUS CLEAN */
-.hero-title {
-  font-size: 48px;
-  font-weight: 600;
-  margin-top: 30px;
-}
-
-.hero-sub {
-  font-size: 20px;
-  color: #aaa;
-}
-
-/* PRIX */
-.price {
-  font-size: 28px;
-  margin-top: 20px;
-}
-
-/* BOUTONS PLUS PREMIUM */
-.btn {
-  padding: 14px 22px;
-  border-radius: 14px;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
-/* PANIER PLUS CLAIR */
-.cart-modal {
-  background: #f5f5f7 !important;
-  color: black !important;
-}
-</style>
-
 </head>
 
 <body>
 
 <!-- HEADER CLIQUABLE -->
-<header onclick="window.location.href='index.html'" style="cursor:pointer;">
-  <h1>Yellowstock</h1>
+<header style="cursor:pointer;" onclick="window.location.href='index.html'">
+  <h1 style="margin:0; font-size:36px;">Yellowstock</h1>
 
   <div>
     🛒 <span id="cartCount">0</span>
@@ -70,20 +21,20 @@ body {
 <!-- HERO -->
 <section style="text-align:center; padding:20px;">
 
-  <h1 class="hero-title">iPhone 15 Pro</h1>
+  <h1 style="font-size:40px; margin-top:40px;">iPhone 15 Pro</h1>
 
-  <p class="hero-sub">
-    Titane. Puissance. Performance extrême.
+  <p style="font-size:18px; color:#aaa;">
+    Puissance. Élégance. Performance ultime.
   </p>
 
   <p style="color:#ff3b30; font-weight:600;">
     🔥 Stock limité — Grade Or (quasi neuf)
   </p>
 
-  <!-- IMAGE FULL -->
-  <img src="images/iphone15.jpg" class="hero-img">
+  <!-- IMAGE 55% LARGEUR PAGE -->
+  <img src="iphone15.jpg" style="width:55%; height:auto; border-radius:30px; margin-top:20px;">
 
-  <p class="price">À partir de 419€</p>
+  <h2 style="margin-top:20px;">À partir de 419€</h2>
   <p style="text-decoration:line-through; color:gray;">699€</p>
 
 </section>
@@ -99,13 +50,13 @@ body {
     <option value="515">512 Go - 515€</option>
   </select>
 
-  <h2 id="price">Prix : 465€</h2>
+  <h2 id="price" style="margin-top:15px;">Prix : 465€</h2>
 
   <button class="btn" onclick="addToCart('iPhone 15 Pro', getPrice())">
     🛒 Ajouter au panier
   </button>
 
-  <br>
+  <br><br>
 
   <button class="btn" onclick="window.location.href='https://buy.stripe.com/TON-LIEN'">
     💳 Acheter maintenant
@@ -132,7 +83,7 @@ body {
     + Écouteurs Pro (9,90€)
   </button>
 
-  <br>
+  <br><br>
 
   <button class="btn" onclick="addToCart('Chargeur Fast', 6.9)">
     + Chargeur Fast (6,90€)

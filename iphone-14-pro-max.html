@@ -12,38 +12,34 @@ body {
   background: #b5b69e;
 }
 
-/* HEADER AGRANDI */
+/* HEADER FIX */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px 30px; /* 1.7x */
+  padding: 25px 30px;
   background: rgba(0,0,0,0.7);
   backdrop-filter: blur(10px);
   color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
-/* LOGO */
+/* LOGO FIX */
 .logo {
-  font-size: 28px;
+  font-size: 34px; /* ← AGRANDI */
+  font-weight: 600;
   cursor: pointer;
 }
 
 /* PANIER */
 .cart-btn {
+  font-size: 20px;
   cursor: pointer;
 }
 
-/* NAV SUR IMAGE */
+/* MENU */
 .top-nav {
-  position: sticky;
-  top: 90px;
   background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(8px);
-  padding: 10px;
+  padding: 12px;
   text-align: center;
 }
 
@@ -51,7 +47,6 @@ header {
   color: white;
   margin: 0 10px;
   text-decoration: none;
-  font-size: 14px;
 }
 
 /* IMAGE */
@@ -67,7 +62,7 @@ section {
   padding: 25px;
 }
 
-/* BOUTONS */
+/* BUTTON */
 button {
   background: #0071e3;
   border: none;
@@ -77,17 +72,17 @@ button {
   cursor: pointer;
 }
 
-/* PANIER SLIDE */
+/* PANIER CORRIGÉ */
 .cart-modal {
   position: fixed;
   top: 0;
   right: -350px;
   width: 350px;
   height: 100%;
-  background: #f5f5f7;
+  background: #d2a679; /* 🍫 CHOCOLAT CLAIR */
   color: black;
   padding: 20px;
-  transition: 0.3s;
+  transition: right 0.3s ease;
   z-index: 2000;
 }
 </style>
@@ -96,29 +91,24 @@ button {
 
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo" onclick="window.location.href='index.html'">
     Yellowstock
   </div>
 
-  <div class="cart-btn" onclick="openCart()">
+  <div class="cart-btn" onclick="toggleCart()">
     🛒 <span id="cartCount">0</span>
   </div>
 </header>
 
-<!-- MENU -->
 <div class="top-nav">
   <a href="iphone-14-pro-max.html">14 Pro Max</a>
   <a href="iphone-15-pro.html">15 Pro</a>
   <a href="iphone-15-pro-max.html">15 Pro Max</a>
-  <a href="iphone-16-pro.html">16 Pro</a>
 </div>
 
-<!-- IMAGE -->
 <img src="iphone14promax.jpg" class="hero-img">
 
-<!-- CONTENU -->
 <section>
 
   <h1>iPhone 14 Pro Max</h1>
@@ -141,13 +131,29 @@ button {
 
 </section>
 
-<!-- PANIER -->
 <div id="cartModal" class="cart-modal"></div>
 
 <script>
+let cartOpen = false;
+
+/* PANIER FIX */
+function toggleCart() {
+  const cart = document.getElementById("cartModal");
+
+  if (!cartOpen) {
+    cart.style.right = "0";
+    cartOpen = true;
+  } else {
+    cart.style.right = "-350px";
+    cartOpen = false;
+  }
+
+  renderCart();
+}
+
+/* SWIPE FIX (PANIER UNIQUEMENT) */
 let startX = 0;
 
-/* SWIPE GLOBAL */
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
@@ -155,33 +161,13 @@ document.addEventListener("touchstart", e => {
 document.addEventListener("touchend", e => {
   let endX = e.changedTouches[0].clientX;
 
-  /* SWIPE GAUCHE → MODELE SUIVANT */
-  if (startX - endX > 80) {
-    window.location.href = "iphone-15-pro.html";
+  if (startX - endX > 100) {
+    toggleCart(); // ouvrir
   }
 
-  /* SWIPE DROITE → MODELE PRECEDENT */
-  if (endX - startX > 80) {
-    window.location.href = "index.html";
+  if (endX - startX > 100) {
+    toggleCart(); // fermer
   }
-});
-
-/* PANIER */
-function openCart() {
-  document.getElementById("cartModal").style.right = "0";
-  renderCart();
-}
-
-function closeCart() {
-  document.getElementById("cartModal").style.right = "-350px";
-}
-
-/* SWIPE PANIER */
-document.addEventListener("touchend", e => {
-  let endX = e.changedTouches[0].clientX;
-
-  if (startX - endX > 100) openCart();
-  if (endX - startX > 100) closeCart();
 });
 
 /* PRIX */

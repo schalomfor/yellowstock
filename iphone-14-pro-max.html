@@ -2,45 +2,198 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>iPhone 14 Pro Max - Grade Or</title>
+<title>iPhone 14 Pro Max - Yellowstock</title>
 <link rel="stylesheet" href="style.css">
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  background: #b5b69e;
+}
+
+/* HEADER AGRANDI */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px; /* 1.7x */
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* LOGO */
+.logo {
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* PANIER */
+.cart-btn {
+  cursor: pointer;
+}
+
+/* NAV SUR IMAGE */
+.top-nav {
+  position: sticky;
+  top: 90px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  padding: 10px;
+  text-align: center;
+}
+
+.top-nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* IMAGE */
+.hero-img {
+  width: 100%;
+  max-height: 60vh;
+  object-fit: cover;
+}
+
+/* SECTION */
+section {
+  text-align: center;
+  padding: 25px;
+}
+
+/* BOUTONS */
+button {
+  background: #0071e3;
+  border: none;
+  padding: 12px 20px;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* PANIER SLIDE */
+.cart-modal {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: #f5f5f7;
+  color: black;
+  padding: 20px;
+  transition: 0.3s;
+  z-index: 2000;
+}
+</style>
+
 </head>
 
 <body>
 
+<!-- HEADER -->
 <header>
-  <h1>Yellowstock</h1>
-  <a href="index.html">← Retour Accueil</a>
+  <div class="logo" onclick="window.location.href='index.html'">
+    Yellowstock
+  </div>
+
+  <div class="cart-btn" onclick="openCart()">
+    🛒 <span id="cartCount">0</span>
+  </div>
 </header>
 
-<section style="text-align:center; padding:40px;">
+<!-- MENU -->
+<div class="top-nav">
+  <a href="iphone-14-pro-max.html">14 Pro Max</a>
+  <a href="iphone-15-pro.html">15 Pro</a>
+  <a href="iphone-15-pro-max.html">15 Pro Max</a>
+  <a href="iphone-16-pro.html">16 Pro</a>
+</div>
 
-  <img src="https://images.unsplash.com/photo-1664478541689-5d5c2b2c1b6f" style="width:300px">
+<!-- IMAGE -->
+<img src="iphone14promax.jpg" class="hero-img">
+
+<!-- CONTENU -->
+<section>
 
   <h1>iPhone 14 Pro Max</h1>
 
-  <h3>Reconditionné - Grade Or ⭐⭐⭐⭐⭐</h3>
+  <p style="color:#ff3b30;">🔥 Grade Or — Quasi neuf</p>
 
-  <p><strong>Stock limité ⚡</strong></p>
+  <h2>À partir de 499€</h2>
 
-  <p>
-    Produit reconditionné en excellent état (Grade Or).  
-    Testé, vérifié et garanti fonctionnel à 100%.
-  </p>
-
-  <h3>Choisir la capacité :</h3>
-
-  <select>
-    <option>128 Go - 449€</option>
-    <option selected>256 Go - 479€</option>
-    <option>512 Go - 529€</option>
+  <select id="storage" onchange="updatePrice()">
+    <option value="499">128 Go - 499€</option>
+    <option value="539" selected>256 Go - 539€</option>
+    <option value="589">512 Go - 589€</option>
   </select>
 
-  <h2>Prix : 479€</h2>
+  <h2 id="price">Prix : 539€</h2>
 
-  <button onclick="buy()">Acheter maintenant</button>
+  <button onclick="addToCart('iPhone 14 Pro Max', getPrice())">
+    Ajouter au panier
+  </button>
 
 </section>
+
+<!-- PANIER -->
+<div id="cartModal" class="cart-modal"></div>
+
+<script>
+let startX = 0;
+
+/* SWIPE GLOBAL */
+document.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+
+  /* SWIPE GAUCHE → MODELE SUIVANT */
+  if (startX - endX > 80) {
+    window.location.href = "iphone-15-pro.html";
+  }
+
+  /* SWIPE DROITE → MODELE PRECEDENT */
+  if (endX - startX > 80) {
+    window.location.href = "index.html";
+  }
+});
+
+/* PANIER */
+function openCart() {
+  document.getElementById("cartModal").style.right = "0";
+  renderCart();
+}
+
+function closeCart() {
+  document.getElementById("cartModal").style.right = "-350px";
+}
+
+/* SWIPE PANIER */
+document.addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+
+  if (startX - endX > 100) openCart();
+  if (endX - startX > 100) closeCart();
+});
+
+/* PRIX */
+function updatePrice() {
+  const price = document.getElementById("storage").value;
+  document.getElementById("price").innerText = "Prix : " + price + "€";
+}
+
+function getPrice() {
+  return parseFloat(document.getElementById("storage").value);
+}
+</script>
 
 <script src="script.js"></script>
 

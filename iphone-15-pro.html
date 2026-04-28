@@ -2,34 +2,54 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>iPhone 15 Pro - Grade Or</title>
+<title>iPhone 15 Pro - Yellowstock</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
+<!-- HEADER CLIQUABLE -->
+<header style="cursor:pointer;" onclick="window.location.href='index.html'">
   <h1>Yellowstock</h1>
-  <a href="index.html">← Retour Accueil</a>
+
+  <div>
+    🛒 <span id="cartCount">0</span>
+    <button onclick="event.stopPropagation(); openCart()">Voir</button>
+  </div>
 </header>
 
+<!-- HERO PRODUIT (STYLE APPLE) -->
 <section style="text-align:center; padding:40px;">
 
-  <img src="images/iphone15pro.jpg">
-  <h1>iPhone 15 Pro</h1>
+  <h1 style="font-size:40px;">iPhone 15 Pro</h1>
 
-  <h3>Reconditionné - Grade Or ⭐⭐⭐⭐⭐</h3>
-
-  <p><strong>Stock limité ⚡</strong></p>
-
-  <p>
-    Produit reconditionné en excellent état (Grade Or).  
-    Testé, vérifié et garanti fonctionnel à 100%.
+  <p style="font-size:18px; color:#aaa;">
+    Puissance. Élégance. Performance ultime.
   </p>
+
+  <p style="color:#ff3b30; font-weight:bold;">
+    🔥 Stock limité — Grade Or (quasi neuf)
+  </p>
+
+  <!-- IMAGE GRANDE -->
+  <img 
+    src="https://images.unsplash.com/photo-1695048133142-1a20484d2569"
+    style="width:90%; max-width:500px; border-radius:25px; margin-top:20px;"
+  >
+
+  <!-- PRIX -->
+  <h2 style="margin-top:20px;">À partir de 419€</h2>
+
+  <p style="text-decoration:line-through; color:gray;">699€</p>
+
+</section>
+
+<!-- OPTIONS -->
+<section style="text-align:center; padding:20px;">
 
   <h3>Choisir la capacité :</h3>
 
-  <select onchange="updatePrice(this)">
+  <select id="storage" onchange="updatePrice()" style="padding:10px; border-radius:10px;">
     <option value="419">128 Go - 419€</option>
     <option value="465" selected>256 Go - 465€</option>
     <option value="515">512 Go - 515€</option>
@@ -37,17 +57,60 @@
 
   <h2 id="price">Prix : 465€</h2>
 
-  <button onclick="buy()">Acheter maintenant</button>
+  <!-- ACTIONS -->
+  <button onclick="addToCart('iPhone 15 Pro', getPrice())">
+    🛒 Ajouter au panier
+  </button>
+
+  <br><br>
+
+  <button onclick="window.location.href='https://buy.stripe.com/TON-LIEN'">
+    💳 Acheter maintenant
+  </button>
 
 </section>
 
-<script src="script.js"></script>
+<!-- AVANTAGES -->
+<section style="text-align:center; padding:20px;">
+
+  <p>✔️ Reconditionné Grade Or ⭐⭐⭐⭐⭐</p>
+  <p>✔️ Batterie testée et vérifiée</p>
+  <p>✔️ Garantie incluse</p>
+
+</section>
+
+<!-- UPSELL -->
+<section style="text-align:center; padding:20px;">
+
+  <h3>💡 Complétez votre achat</h3>
+
+  <button onclick="addToCart('Écouteurs Pro', 9.9)">
+    + Écouteurs Pro (9,90€)
+  </button>
+
+  <br><br>
+
+  <button onclick="addToCart('Chargeur Fast', 6.9)">
+    + Chargeur Fast (6,90€)
+  </button>
+
+</section>
+
+<!-- PANIER -->
+<div id="cartModal" class="cart-modal"></div>
 
 <script>
-function updatePrice(select) {
-  document.getElementById("price").innerText = "Prix : " + select.value + "€";
+function updatePrice() {
+  const price = document.getElementById("storage").value;
+  document.getElementById("price").innerText = "Prix : " + price + "€";
+}
+
+function getPrice() {
+  return parseFloat(document.getElementById("storage").value);
 }
 </script>
+
+<script src="script.js"></script>
 
 </body>
 </html>

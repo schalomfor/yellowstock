@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Yellowstock</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont;
+  background: rgb(181,160,140);
+  transition: background 0.3s ease;
+}
+
+/* HEADER */
+header { position: sticky; top:0; z-index:1000; }
+.top-bar {
+  background:#111; color:white; text-align:center; padding:8px; font-size:12px;
+}
+.main-bar {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 22px; background:rgba(20,20,20,0.95); color:white;
+}
+.logo { font-size:22px; font-weight:700; cursor:pointer; }
+
+.cart-btn {
+  background:rgba(255,255,255,0.15);
+  padding:10px 14px;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+/* IMAGE */
+.hero-img {
+  width:100%;
+  max-height:55vh;
+  object-fit:cover;
+  background:#222;
+}
+
+/* SECTION */
+section { text-align:center; padding:30px; }
+button {
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  background:#0071e3;
+  color:white;
+  cursor:pointer;
+}
+
+/* CART */
+.cart-modal {
+  position:fixed;
+  top:0; right:0;
+  width:66%;
+  max-width:420px;
+  height:100%;
+  background:rgba(35,30,28,0.92);
+  color:white;
+  padding:20px;
+  transform:translateX(100%);
+  transition:0.25s;
+  z-index:9999;
+}
+
+.cart-modal.open { transform:translateX(0); }
+
+.overlay {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+  <div class="top-bar">Yellowstock • Premium iPhone</div>
+
+  <div class="main-bar">
+    <div class="logo" onclick="location.href='index.html'">Yellowstock</div>
+
+    <div class="cart-btn" onclick="openCart()">
+      🛒 <span id="cartCount">0</span>
+    </div>
+  </div>
+</header>
+
+<img id="productImage" class="hero-img">
+
+<section>
+  <h1 id="title"></h1>
+  <p id="grade"></p>
+  <h2 id="price"></h2>
+
+  <button onclick="addToCart()">Ajouter au panier</button>
+</section>
+
+<div class="overlay" onclick="closeCart()"></div>
+<div id="cartModal" class="cart-modal"></div>
+
+<script>
+
+/* =========================
+   PRODUITS DATABASE
+========================= */
+const products = {
+  iphone15pro: {
+    name: "iPhone 15 Pro",
+    price: 799,
+    img: "iphone15pro.jpg"
+  },
+  iphone15promax: {
+    name: "iPhone 15 Pro Max",
+    price: 899,
+    img: "iphone15promax.jpg"
+  },
+  iphone16pro: {
+    name: "iPhone 16 Pro",
+    price: 999,
+    img: "iphone16pro.jpg"
+  },
+  iphone16promax: {
+    name: "iPhone 16 Pro Max",
+    price: 1099,
+    img: "iphone16promax.jpg"
+  }
+};
+
+/* =========================
+   GET MODEL FROM URL
+========================= */
+const params = new URLSearchParams(window.location.search);
+const model = params.get("model");
+
+/* =========================
+   LOAD PRODUCT
+========================= */
+let currentProduct = products[model] || products["iphone15pro"];
+
+document.getElementById("title").innerText = currentProduct.name;
+document.getElementById("price").innerText = currentProduct.price + "€";
+document.getElementById("grade").innerText = "🔥 Grade Or — Quasi neuf";
+document.getElementById("productImage").src = currentProduct.img;
+
+/* =========================
+   CART SYSTEM
+========================= */
+let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
+
+function addToCart() {
+  cart.push(currentProduct);
+  localStorage.setItem("ys_cart", JSON.stringify(cart));
+  updateCartCount();
+  openCart();
+}
+
+function updateCartCount() {
+  document.getElementById("cartCount").innerText = cart.length;
+}
+
+function openCart() {
+  document.getElementById("cartModal").classList.add("open");
+  renderCart();
+}
+
+function closeCart() {
+  document.getElementById("cartModal").classList.remove("open");
+}
+
+function renderCart() {
+  let modal = document.getElementById("cartModal");
+
+  let total = 0;
+  modal.innerHTML = "<h2>🛒 Panier</h2>";
+
+  cart.forEach((item, i) => {
+    total += item.price;
+
+    modal.innerHTML += `
+      <p>${item.name} - ${item.price}€</p>
+      <button onclick="removeItem(${i})">Supprimer</button>
+    `;
+  });
+
+  modal.innerHTML += `<h3>Total : ${total}€</h3>`;
+}
+
+function removeItem(i) {
+  cart.splice(i,1);
+  localStorage.setItem("ys_cart", JSON.stringify(cart));
+  updateCartCount();
+  renderCart();
+}
+
+window.onload = updateCartCount;
+
+</script>
+
+</body>
+</html>

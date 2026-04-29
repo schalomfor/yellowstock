@@ -2,18 +2,21 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>iPhone 14 Pro Max - Yellowstock</title>
+<title>Yellowstock - iPhone 14 Pro Max</title>
 
 <style>
+/* =========================
+   BASE
+========================= */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont;
-  background: rgb(181, 160, 140); /* marron clair mat */
+  background: rgb(181, 160, 140); /* marron mat */
   transition: background 0.3s ease;
 }
 
 /* =========================
-   HEADER DOUBLE
+   HEADER PRO
 ========================= */
 header {
   position: sticky;
@@ -22,7 +25,7 @@ header {
 }
 
 .top-bar {
-  background: rgba(0,0,0,0.85);
+  background: #111;
   color: white;
   text-align: center;
   font-size: 12px;
@@ -33,30 +36,23 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 25px;
+  padding: 16px 22px;
   background: rgba(20,20,20,0.95);
   color: white;
 }
 
 .logo {
-  font-size: 26px;
-  font-weight: bold;
+  font-size: 22px;
+  font-weight: 700;
   cursor: pointer;
 }
 
-/* =========================
-   PANIER BUTTON
-========================= */
 .cart-btn {
   background: rgba(255,255,255,0.15);
   padding: 10px 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s;
-}
-
-.cart-btn:active {
-  transform: scale(0.92);
+  color: white;
 }
 
 /* =========================
@@ -67,6 +63,7 @@ header {
   max-height: 55vh;
   object-fit: cover;
   cursor: pointer;
+  background: #222;
 }
 
 /* =========================
@@ -102,13 +99,14 @@ button {
 }
 
 /* =========================
-   CART MODAL (66%)
+   CART DRAWER (66%)
 ========================= */
 .cart-modal {
   position: fixed;
   top: 0;
   right: 0;
   width: 66%;
+  max-width: 420px;
   height: 100%;
   background: rgba(35,30,28,0.92);
   backdrop-filter: blur(18px);
@@ -134,6 +132,7 @@ button {
 
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="top-bar">Yellowstock • Premium iPhone Store</div>
 
@@ -148,14 +147,15 @@ button {
   </div>
 </header>
 
-<!-- IMAGE CLIQUABLE (carrousel) -->
-<img src="iphone14_front.jpg"
+<!-- IMAGE PRODUIT -->
+<img id="productImage"
+     src="iphone14_front.jpg"
      class="hero-img"
      onclick="changeImage()">
 
 <section>
   <h1>iPhone 14 Pro Max</h1>
-  <p style="color:#a33;">🔥 Grade Or — Quasi neuf</p>
+  <p style="color:#8b3a2e;">🔥 Grade Or — Quasi neuf</p>
   <h2>539€</h2>
 
   <button onclick="addToCart('iPhone 14 Pro Max', 539)">
@@ -172,7 +172,7 @@ button {
 <script>
 
 /* =========================
-   STATE GLOBAL
+   STATE
 ========================= */
 let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
 let startX = 0;
@@ -187,21 +187,33 @@ const images = [
 ];
 
 /* =========================
-   INIT BACKGROUND
+   INIT
+========================= */
+window.onload = () => {
+  updateCartCount();
+  applyBackground();
+
+  const img = document.getElementById("productImage");
+  if (img) img.src = images[0];
+};
+
+/* =========================
+   BACKGROUND
 ========================= */
 function applyBackground() {
-  let r = 181 - (intensity * 100);
-  let g = 160 - (intensity * 80);
-  let b = 140 - (intensity * 70);
+  let r = 181 - intensity * 90;
+  let g = 160 - intensity * 80;
+  let b = 140 - intensity * 70;
 
   document.body.style.background = `rgb(${r},${g},${b})`;
 }
 
 /* =========================
-   ADD CART
+   ADD TO CART
 ========================= */
 function addToCart(name, price) {
   cart.push({ name, price });
+
   saveCart();
   updateCartCount();
 
@@ -220,11 +232,12 @@ function saveCart() {
    COUNT
 ========================= */
 function updateCartCount() {
-  document.getElementById("cartCount").innerText = cart.length;
+  const el = document.getElementById("cartCount");
+  if (el) el.innerText = cart.length;
 }
 
 /* =========================
-   OPEN CART (66%)
+   OPEN CART
 ========================= */
 function openCart() {
   document.querySelector(".cart-modal").classList.add("open");
@@ -260,14 +273,14 @@ function increaseIntensity(v) {
    RENDER CART
 ========================= */
 function renderCart() {
-  let modal = document.getElementById("cartModal");
+  const modal = document.getElementById("cartModal");
 
   let total = 0;
 
   modal.innerHTML = "<h2>🛒 Panier</h2>";
 
   if (cart.length === 0) {
-    modal.innerHTML += "<p>Vide</p>";
+    modal.innerHTML += "<p>Panier vide</p>";
     return;
   }
 
@@ -320,11 +333,20 @@ function checkout() {
 }
 
 /* =========================
-   IMAGE SWAP
+   IMAGE SWITCH
 ========================= */
 function changeImage() {
+  const img = document.getElementById("productImage");
+  if (!img) return;
+
   imgIndex = (imgIndex + 1) % images.length;
-  document.querySelector(".hero-img").src = images[imgIndex];
+
+  const test = new Image();
+  test.src = images[imgIndex];
+
+  test.onload = () => {
+    img.src = images[imgIndex];
+  };
 
   increaseIntensity(0.03);
 }
@@ -337,9 +359,10 @@ document.addEventListener("touchstart", e => {
 });
 
 document.addEventListener("touchmove", e => {
-  let diff = startX - e.touches[0].clientX;
-
+  const diff = startX - e.touches[0].clientX;
   const modal = document.querySelector(".cart-modal");
+
+  if (!modal) return;
 
   if (diff > 0 && diff < window.innerWidth * 0.66) {
     modal.style.transform =
@@ -348,17 +371,11 @@ document.addEventListener("touchmove", e => {
 });
 
 document.addEventListener("touchend", e => {
-  let diff = startX - e.changedTouches[0].clientX;
+  const diff = startX - e.changedTouches[0].clientX;
 
   if (diff > window.innerWidth * 0.25) openCart();
   else closeCart();
 });
-
-/* INIT */
-window.onload = () => {
-  updateCartCount();
-  applyBackground();
-};
 
 </script>
 

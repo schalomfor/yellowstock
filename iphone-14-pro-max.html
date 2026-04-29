@@ -8,51 +8,79 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont;
-  background: #f2f2f2;
+  background: #ffffff;
+  transition: background 0.4s ease;
 }
 
-/* HEADER */
+/* =========================
+   HEADER DOUBLÉ (Bandeau pro)
+========================= */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 25px;
-  background: rgba(0,0,0,0.85);
-  color: white;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
+.top-bar {
+  background: rgba(0,0,0,0.9);
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.main-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  background: rgba(20,20,20,0.95);
+  color: white;
+}
+
 .logo {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: bold;
   cursor: pointer;
 }
 
+/* =========================
+   BOUTON PANIER (iPhone feel)
+========================= */
 .cart-btn {
-  font-size: 22px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  padding: 10px 14px;
+  border-radius: 14px;
   cursor: pointer;
-  background: white;
-  color: black;
-  padding: 8px 12px;
-  border-radius: 12px;
+  transition: transform 0.15s ease;
+  user-select: none;
 }
 
-/* IMAGE */
+.cart-btn:active {
+  transform: scale(0.92);
+}
+
+/* =========================
+   IMAGE
+========================= */
 .hero-img {
   width: 100%;
   max-height: 55vh;
   object-fit: cover;
 }
 
-/* SECTION */
+/* =========================
+   SECTION
+========================= */
 section {
   text-align: center;
   padding: 30px;
 }
 
-/* BOUTON */
+/* =========================
+   BUTTON
+========================= */
 button {
   padding: 12px 18px;
   border: none;
@@ -60,49 +88,50 @@ button {
   background: #0071e3;
   color: white;
   cursor: pointer;
-  font-size: 16px;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-/* OVERLAY */
+/* =========================
+   OVERLAY (fond dynamique)
+========================= */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: none;
+  background: rgba(255, 0, 200, 0);
+  transition: 0.3s;
   z-index: 9998;
+  pointer-events: none;
 }
 
-/* PANIER */
+/* =========================
+   PANIER (drawer fluide)
+========================= */
 .cart-modal {
   position: fixed;
   top: 0;
-  right: -420px;
-  width: 380px;
+  right: 0;
+  width: 80%;
+  max-width: 420px;
   height: 100%;
-  background: white;
-  color: black;
+  background: rgba(20,20,25,0.92);
+  backdrop-filter: blur(18px);
+  color: white;
   padding: 20px;
-  transition: 0.3s ease;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
   z-index: 9999;
-  box-shadow: -10px 0 30px rgba(0,0,0,0.3);
   overflow-y: auto;
 }
 
-.cart-modal.active {
-  right: 0;
+.cart-modal.open {
+  transform: translateX(0);
 }
 
 .cart-item {
-  margin-bottom: 12px;
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 </style>
 
@@ -110,13 +139,18 @@ button:hover {
 
 <body>
 
+<!-- HEADER DOUBLÉ -->
 <header>
-  <div class="logo" onclick="window.location.href='index.html'">
-    Yellowstock
-  </div>
+  <div class="top-bar">Livraison rapide • Garantie Apple-style</div>
 
-  <div class="cart-btn" onclick="openCart()">
-    🛒 <span id="cartCount">0</span>
+  <div class="main-bar">
+    <div class="logo" onclick="window.location.href='index.html'">
+      Yellowstock
+    </div>
+
+    <div class="cart-btn" onclick="openCart()">
+      🛒 <span id="cartCount">0</span>
+    </div>
   </div>
 </header>
 
@@ -132,21 +166,16 @@ button:hover {
   </button>
 </section>
 
-<!-- OVERLAY -->
 <div class="overlay" onclick="closeCart()"></div>
 
-<!-- PANIER -->
 <div id="cartModal" class="cart-modal"></div>
 
 <script>
 
-/* =========================
-   PANIER GLOBAL (LOCALSTORAGE)
-========================= */
 let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
 
 /* =========================
-   AJOUT PANIER
+   AJOUT
 ========================= */
 function addToCart(name, price) {
   cart.push({ name, price });
@@ -156,62 +185,59 @@ function addToCart(name, price) {
 }
 
 /* =========================
-   SAUVEGARDE
+   SAVE
 ========================= */
 function saveCart() {
   localStorage.setItem("ys_cart", JSON.stringify(cart));
 }
 
 /* =========================
-   COMPTEUR
+   COUNT
 ========================= */
 function updateCartCount() {
   document.getElementById("cartCount").innerText = cart.length;
 }
 
 /* =========================
-   OUVERTURE PANIER
+   OPEN CART + FX
 ========================= */
 function openCart() {
-  document.querySelector(".cart-modal").classList.add("active");
-  document.querySelector(".overlay").style.display = "block";
+  document.querySelector(".cart-modal").classList.add("open");
+  document.querySelector(".overlay").style.background = "rgba(255,0,180,0.15)";
   renderCart();
 }
 
 /* =========================
-   FERMETURE PANIER
+   CLOSE CART
 ========================= */
 function closeCart() {
-  document.querySelector(".cart-modal").classList.remove("active");
-  document.querySelector(".overlay").style.display = "none";
+  document.querySelector(".cart-modal").classList.remove("open");
+  document.querySelector(".overlay").style.background = "rgba(255,0,180,0)";
 }
 
 /* =========================
-   AFFICHAGE PANIER
+   RENDER
 ========================= */
 function renderCart() {
   let modal = document.getElementById("cartModal");
 
   let total = 0;
 
-  modal.innerHTML = `
-    <h2>🛒 Panier</h2>
-  `;
+  modal.innerHTML = "<h2>🛒 Panier</h2>";
 
   if (cart.length === 0) {
-    modal.innerHTML += "<p>Panier vide</p>";
+    modal.innerHTML += "<p>Vide</p>";
     return;
   }
 
-  cart.forEach((item, index) => {
+  cart.forEach((item, i) => {
     total += item.price;
 
     modal.innerHTML += `
       <div class="cart-item">
-        <strong>${item.name}</strong><br>
-        ${item.price}€
+        ${item.name} - ${item.price}€
         <br>
-        <button onclick="removeItem(${index})">Supprimer</button>
+        <button onclick="removeItem(${i})">Supprimer</button>
       </div>
     `;
   });
@@ -225,7 +251,7 @@ function renderCart() {
 }
 
 /* =========================
-   SUPPRESSION
+   REMOVE
 ========================= */
 function removeItem(i) {
   cart.splice(i, 1);
@@ -235,11 +261,10 @@ function removeItem(i) {
 }
 
 /* =========================
-   PAIEMENT
+   CHECKOUT
 ========================= */
 function checkout() {
-  alert("Paiement simulé Yellowstock 💳");
-
+  alert("Paiement simulé 💳");
   cart = [];
   saveCart();
   updateCartCount();
@@ -248,7 +273,7 @@ function checkout() {
 }
 
 /* =========================
-   SWIPE (FIABLE)
+   SWIPE PROGRESSIF (0 → 66%)
 ========================= */
 let startX = 0;
 
@@ -256,17 +281,32 @@ document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
 
+document.addEventListener("touchmove", e => {
+  let moveX = e.touches[0].clientX;
+  let diff = startX - moveX;
+
+  if (diff > 0 && diff < window.innerWidth * 0.66) {
+    document.querySelector(".cart-modal").style.transform =
+      `translateX(${100 - (diff / (window.innerWidth * 0.66)) * 100}%)`;
+
+    document.body.style.background =
+      `rgb(255, ${255 - diff * 0.3}, ${255 - diff * 0.2})`;
+  }
+});
+
 document.addEventListener("touchend", e => {
   let endX = e.changedTouches[0].clientX;
+  let diff = startX - endX;
 
-  if (startX - endX > 80) openCart();
-  if (endX - startX > 80) closeCart();
+  if (diff > window.innerWidth * 0.3) {
+    openCart();
+  } else {
+    closeCart();
+  }
 });
 
 /* INIT */
-window.onload = () => {
-  updateCartCount();
-};
+window.onload = () => updateCartCount();
 
 </script>
 

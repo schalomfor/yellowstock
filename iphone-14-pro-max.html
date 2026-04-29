@@ -8,12 +8,12 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont;
-  background: #ffffff;
-  transition: background 0.4s ease;
+  background: rgb(181, 160, 140); /* marron clair mat */
+  transition: background 0.3s ease;
 }
 
 /* =========================
-   HEADER DOUBLÉ (Bandeau pro)
+   HEADER DOUBLE
 ========================= */
 header {
   position: sticky;
@@ -22,11 +22,11 @@ header {
 }
 
 .top-bar {
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.85);
   color: white;
-  padding: 12px;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
+  padding: 8px;
 }
 
 .main-bar {
@@ -45,16 +45,14 @@ header {
 }
 
 /* =========================
-   BOUTON PANIER (iPhone feel)
+   PANIER BUTTON
 ========================= */
 .cart-btn {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.15);
   padding: 10px 14px;
   border-radius: 14px;
   cursor: pointer;
-  transition: transform 0.15s ease;
-  user-select: none;
+  transition: 0.2s;
 }
 
 .cart-btn:active {
@@ -62,12 +60,13 @@ header {
 }
 
 /* =========================
-   IMAGE
+   IMAGE PRODUIT
 ========================= */
 .hero-img {
   width: 100%;
   max-height: 55vh;
   object-fit: cover;
+  cursor: pointer;
 }
 
 /* =========================
@@ -78,9 +77,6 @@ section {
   padding: 30px;
 }
 
-/* =========================
-   BUTTON
-========================= */
 button {
   padding: 12px 18px;
   border: none;
@@ -91,7 +87,7 @@ button {
 }
 
 /* =========================
-   OVERLAY (fond dynamique)
+   OVERLAY
 ========================= */
 .overlay {
   position: fixed;
@@ -99,23 +95,22 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 0, 200, 0);
+  background: rgba(255,0,180,0);
   transition: 0.3s;
   z-index: 9998;
   pointer-events: none;
 }
 
 /* =========================
-   PANIER (drawer fluide)
+   CART MODAL (66%)
 ========================= */
 .cart-modal {
   position: fixed;
   top: 0;
   right: 0;
-  width: 80%;
-  max-width: 420px;
+  width: 66%;
   height: 100%;
-  background: rgba(20,20,25,0.92);
+  background: rgba(35,30,28,0.92);
   backdrop-filter: blur(18px);
   color: white;
   padding: 20px;
@@ -130,8 +125,8 @@ button {
 }
 
 .cart-item {
-  padding: 10px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 0;
 }
 </style>
 
@@ -139,9 +134,8 @@ button {
 
 <body>
 
-<!-- HEADER DOUBLÉ -->
 <header>
-  <div class="top-bar">Livraison rapide • Garantie Apple-style</div>
+  <div class="top-bar">Yellowstock • Premium iPhone Store</div>
 
   <div class="main-bar">
     <div class="logo" onclick="window.location.href='index.html'">
@@ -154,11 +148,14 @@ button {
   </div>
 </header>
 
-<img src="iphone14promax.jpg" class="hero-img">
+<!-- IMAGE CLIQUABLE (carrousel) -->
+<img src="iphone14_front.jpg"
+     class="hero-img"
+     onclick="changeImage()">
 
 <section>
   <h1>iPhone 14 Pro Max</h1>
-  <p style="color:#d00;">🔥 Grade Or — Quasi neuf</p>
+  <p style="color:#a33;">🔥 Grade Or — Quasi neuf</p>
   <h2>539€</h2>
 
   <button onclick="addToCart('iPhone 14 Pro Max', 539)">
@@ -166,21 +163,49 @@ button {
   </button>
 </section>
 
+<!-- OVERLAY -->
 <div class="overlay" onclick="closeCart()"></div>
 
+<!-- CART -->
 <div id="cartModal" class="cart-modal"></div>
 
 <script>
 
+/* =========================
+   STATE GLOBAL
+========================= */
 let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
+let startX = 0;
+let imgIndex = 0;
+let intensity = 0.13;
+
+/* IMAGES PRODUIT */
+const images = [
+  "iphone14_front.jpg",
+  "iphone14_side.jpg",
+  "iphone14_back.jpg"
+];
 
 /* =========================
-   AJOUT
+   INIT BACKGROUND
+========================= */
+function applyBackground() {
+  let r = 181 - (intensity * 100);
+  let g = 160 - (intensity * 80);
+  let b = 140 - (intensity * 70);
+
+  document.body.style.background = `rgb(${r},${g},${b})`;
+}
+
+/* =========================
+   ADD CART
 ========================= */
 function addToCart(name, price) {
   cart.push({ name, price });
   saveCart();
   updateCartCount();
+
+  increaseIntensity(0.06);
   openCart();
 }
 
@@ -199,11 +224,14 @@ function updateCartCount() {
 }
 
 /* =========================
-   OPEN CART + FX
+   OPEN CART (66%)
 ========================= */
 function openCart() {
   document.querySelector(".cart-modal").classList.add("open");
-  document.querySelector(".overlay").style.background = "rgba(255,0,180,0.15)";
+  document.querySelector(".overlay").style.pointerEvents = "auto";
+  document.querySelector(".overlay").style.background = "rgba(255,0,180,0.12)";
+
+  increaseIntensity(0.13);
   renderCart();
 }
 
@@ -212,11 +240,24 @@ function openCart() {
 ========================= */
 function closeCart() {
   document.querySelector(".cart-modal").classList.remove("open");
+  document.querySelector(".overlay").style.pointerEvents = "none";
   document.querySelector(".overlay").style.background = "rgba(255,0,180,0)";
+
+  intensity = 0.13;
+  applyBackground();
 }
 
 /* =========================
-   RENDER
+   INTENSITY
+========================= */
+function increaseIntensity(v) {
+  intensity += v;
+  if (intensity > 0.19) intensity = 0.19;
+  applyBackground();
+}
+
+/* =========================
+   RENDER CART
 ========================= */
 function renderCart() {
   let modal = document.getElementById("cartModal");
@@ -235,7 +276,8 @@ function renderCart() {
 
     modal.innerHTML += `
       <div class="cart-item">
-        ${item.name} - ${item.price}€
+        <b>${item.name}</b><br>
+        ${item.price}€
         <br>
         <button onclick="removeItem(${i})">Supprimer</button>
       </div>
@@ -265,48 +307,58 @@ function removeItem(i) {
 ========================= */
 function checkout() {
   alert("Paiement simulé 💳");
+
   cart = [];
   saveCart();
   updateCartCount();
+
+  intensity = 0.13;
+  applyBackground();
+
   renderCart();
   closeCart();
 }
 
 /* =========================
-   SWIPE PROGRESSIF (0 → 66%)
+   IMAGE SWAP
 ========================= */
-let startX = 0;
+function changeImage() {
+  imgIndex = (imgIndex + 1) % images.length;
+  document.querySelector(".hero-img").src = images[imgIndex];
 
+  increaseIntensity(0.03);
+}
+
+/* =========================
+   SWIPE 0 → 66%
+========================= */
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
 
 document.addEventListener("touchmove", e => {
-  let moveX = e.touches[0].clientX;
-  let diff = startX - moveX;
+  let diff = startX - e.touches[0].clientX;
+
+  const modal = document.querySelector(".cart-modal");
 
   if (diff > 0 && diff < window.innerWidth * 0.66) {
-    document.querySelector(".cart-modal").style.transform =
+    modal.style.transform =
       `translateX(${100 - (diff / (window.innerWidth * 0.66)) * 100}%)`;
-
-    document.body.style.background =
-      `rgb(255, ${255 - diff * 0.3}, ${255 - diff * 0.2})`;
   }
 });
 
 document.addEventListener("touchend", e => {
-  let endX = e.changedTouches[0].clientX;
-  let diff = startX - endX;
+  let diff = startX - e.changedTouches[0].clientX;
 
-  if (diff > window.innerWidth * 0.3) {
-    openCart();
-  } else {
-    closeCart();
-  }
+  if (diff > window.innerWidth * 0.25) openCart();
+  else closeCart();
 });
 
 /* INIT */
-window.onload = () => updateCartCount();
+window.onload = () => {
+  updateCartCount();
+  applyBackground();
+};
 
 </script>
 

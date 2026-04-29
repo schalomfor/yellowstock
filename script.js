@@ -1,66 +1,121 @@
-let cart = [];
-let cartOpen = false;
+
+let cart = JSON.parse(localStorage.getItem("ys_cart")) || [];
+
+/* =========================
+   STATE
+========================= */
 let startX = 0;
+let imgIndex = 0;
+let intensity = 0.13;
 
 /* =========================
-   🛒 OUVRIR / FERMER PANIER
+   IMAGES PRODUIT
 ========================= */
-
-function openCart() {
-  const cartModal = document.getElementById("cartModal");
-  if (!cartModal) return;
-
-  cartModal.style.right = "0";
-  cartOpen = true;
-  renderCart();
-}
-
-function closeCart() {
-  const cartModal = document.getElementById("cartModal");
-  if (!cartModal) return;
-
-  cartModal.style.right = "-80%";
-  cartOpen = false;
-}
-
-function toggleCart() {
-  if (cartOpen) {
-    closeCart();
-  } else {
-    openCart();
-  }
-}
+const images = [
+  "iphone14_front.jpg",
+  "iphone14_side.jpg",
+  "iphone14_back.jpg"
+];
 
 /* =========================
-   ➕ AJOUT AVEC CONFIRMATION
+   INIT
 ========================= */
-
-function confirmAdd(name = "Produit", price = 0) {
-  const ok = confirm("Ajouter ce produit au panier ?");
-  if (!ok) return;
-
-  cart.push({ name, price, qty: 1 });
+window.onload = () => {
   updateCartCount();
+  applyBackground();
+
+  const img = document.getElementById("productImage");
+  if (img) img.src = images[0];
+};
+
+/* =========================
+   BACKGROUND SYSTEM
+========================= */
+function applyBackground() {
+  let r = 181 - (intensity * 90);
+  let g = 160 - (intensity * 80);
+  let b = 140 - (intensity * 70);
+
+  document.body.style.background = `rgb(${r},${g},${b})`;
+}
+
+/* =========================
+   ADD TO CART
+========================= */
+function addToCart(name, price) {
+  cart.push({ name, price });
+
+  saveCart();
+  updateCartCount();
+
+  increaseIntensity(0.06);
   openCart();
 }
 
 /* =========================
-   🔢 COMPTEUR PANIER
+   SAVE LOCALSTORAGE
 ========================= */
-
-function updateCartCount() {
-  const counter = document.getElementById("cartCount");
-  if (counter) {
-    counter.innerText = cart.length;
-  }
+function saveCart() {
+  localStorage.setItem("ys_cart", JSON.stringify(cart));
 }
 
 /* =========================
-   📦 AFFICHAGE PANIER
+   COUNT
 ========================= */
+function updateCartCount() {
+  const el = document.getElementById("cartCount");
+  if (el) el.innerText = cart.length;
+}
 
+/* =========================
+   OPEN CART (66%)
+========================= */
+function openCart() {
+  const modal = document.querySelector(".cart-modal");
+  const overlay = document.querySelector(".overlay");
+
+  if (modal) modal.classList.add("open");
+  if (overlay) {
+    overlay.style.pointerEvents = "auto";
+    overlay.style.background = "rgba(255,0,180,0.12)";
+  }
+
+  increaseIntensity(0.13);
+  renderCart();
+}
+
+/* =========================
+   CLOSE CART
+========================= */
+function closeCart() {
+  const modal = document.querySelector(".cart-modal");
+  const overlay = document.querySelector(".overlay");
+
+  if (modal) modal.classList.remove("open");
+  if (overlay) {
+    overlay.style.pointerEvents = "none";
+    overlay.style.background = "rgba(255,0,180,0)";
+  }
+
+  intensity = 0.13;
+  applyBackground();
+}
+
+/* =========================
+   INTENSITY SYSTEM
+========================= */
+function increaseIntensity(value) {
+  intensity += value;
+  if (intensity > 0.19) intensity = 0.19;
+  applyBackground();
+}
+
+/* =========================
+   RENDER CART
+========================= */
 function renderCart() {
   const modal = document.getElementById("cartModal");
+
   if (!modal) return;
 
   let total = 0;
@@ -68,18 +123,19 @@ function renderCart() {
   modal.innerHTML = "<h2>🛒 Panier</h2>";
 
   if (cart.length === 0) {
-    modal.innerHTML += "<p>Votre panier est vide</p>";
+    modal.innerHTML += "<p>Panier vide</p>";
+    return;
   }
 
-  cart.forEach((item, index) => {
-    total += item.price * item.qty;
+  cart.forEach((item, i) => {
+    total += item.price;
 
     modal.innerHTML += `
-      <div style="margin-bottom:15px;">
-        <p>${item.name}</p>
-        <p>${item.price}€</p>
-
-        <button onclick="removeItem(${index})">Supprimer</button>
+      <div style="margin-bottom:10px;">
+        <b>${item.name}</b><br>
+        ${item.price}€
+        <br>
+        <button onclick="removeItem(${i})">Supprimer</button>
       </div>
     `;
   });
@@ -87,57 +143,84 @@ function renderCart() {
   modal.innerHTML += `
     <hr>
     <h3>Total : ${total}€</h3>
-
     <button onclick="checkout()">💳 Payer</button>
-    <br><br>
     <button onclick="closeCart()">Fermer</button>
   `;
 }
 
 /* =========================
-   ❌ SUPPRIMER PRODUIT
+   REMOVE ITEM
 ========================= */
-
-function removeItem(index) {
-  cart.splice(index, 1);
+function removeItem(i) {
+  cart.splice(i, 1);
+  saveCart();
   updateCartCount();
   renderCart();
 }
 
 /* =========================
-   💳 CHECKOUT
+   CHECKOUT
 ========================= */
-
 function checkout() {
-  alert("Paiement à connecter avec Stripe");
+  alert("Paiement simulé 💳");
+
+  cart = [];
+  saveCart();
+  updateCartCount();
+
+  intensity = 0.13;
+  applyBackground();
+
+  renderCart();
+  closeCart();
 }
 
 /* =========================
-   👉 SWIPE GLOBAL
+   IMAGE CAROUSEL SAFE
 ========================= */
+function changeImage() {
+  const img = document.getElementById("productImage");
+  if (!img) return;
 
+  imgIndex = (imgIndex + 1) % images.length;
+
+  const next = images[imgIndex];
+
+  const test = new Image();
+  test.src = next;
+
+  test.onload = () => {
+    img.src = next;
+  };
+
+  increaseIntensity(0.03);
+}
+
+/* =========================
+   SWIPE 0 → 66%
+========================= */
 document.addEventListener("touchstart", e => {
   startX = e.touches[0].clientX;
 });
 
-document.addEventListener("touchend", e => {
-  let endX = e.changedTouches[0].clientX;
+document.addEventListener("touchmove", e => {
+  const diff = startX - e.touches[0].clientX;
+  const modal = document.querySelector(".cart-modal");
 
-  // Swipe gauche → ouvrir
-  if (startX - endX > 80) {
-    openCart();
-  }
+  if (!modal) return;
 
-  // Swipe droite → fermer
-  if (endX - startX > 80) {
-    closeCart();
+  if (diff > 0 && diff < window.innerWidth * 0.66) {
+    modal.style.transform =
+      `translateX(${100 - (diff / (window.innerWidth * 0.66)) * 100}%)`;
   }
 });
 
-/* =========================
-   🔄 INIT
-========================= */
+document.addEventListener("touchend", e => {
+  const diff = startX - e.changedTouches[0].clientX;
 
-window.onload = function () {
-  updateCartCount();
-};
+  if (diff > window.innerWidth * 0.25) {
+    openCart();
+  } else {
+    closeCart();
+  }
+});
